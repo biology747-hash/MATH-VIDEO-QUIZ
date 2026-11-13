@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบสอบการท่องสูตรคูณออนไลน์ | ส่งคลิปให้ครู</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Prompt & Sarabun -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Prompt', 'Sarabun', 'sans-serif'],
+                        body: ['Sarabun', 'Prompt', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Prompt', sans-serif;
+            background-color: #F5F7FF;
+            color: #1E293B;
+        }
+        .gradient-indigo {
+            background: linear-gradient(135deg, #4338CA 0%, #6366F1 55%, #8B5CF6 100%);
+        }
+        .gradient-amber {
+            background: linear-gradient(135deg, #D97706 0%, #F59E0B 50%, #FBBF24 100%);
+        }
+        .soft-shadow {
+            box-shadow: 0 12px 30px -6px rgba(67, 56, 202, 0.08), 0 6px 12px -4px rgba(67, 56, 202, 0.04);
+        }
+        @keyframes recBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.25; }
+        }
+        .rec-dot {
+            animation: recBlink 1s infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- ==========================================
+         TOP HEADER NAVIGATION
+         ========================================== -->
+    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-indigo-100 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- Brand -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('student-submit')">
+                <div class="w-11 h-11 rounded-2xl gradient-indigo text-white flex items-center justify-center text-xl shadow-md">
+                    <i class="fa-solid fa-video"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="font-extrabold text-base sm:text-lg text-slate-800">ระบบสอบท่องสูตรคูณออนไลน์</span>
+                        <span class="hidden sm:inline-block px-2.5 py-0.5 text-[10px] font-bold rounded-full bg-indigo-100 text-indigo-700">แม่ 2 - แม่ 12</span>
+                    </div>
+                    <p class="text-[11px] text-slate-500">อัดคลิปวิดีโอ • ส่งงานเข้า Google Drive • ครูตรวจให้คะแนนทันที</p>
+                </div>
+            </div>
+
+            <!-- Desktop Menu Tabs -->
+            <nav class="hidden md:flex items-center bg-slate-100 p-1 rounded-2xl border border-slate-200 text-xs font-bold">
+                <button onclick="switchTab('student-submit')" id="nav-btn-student-submit" class="nav-tab px-3.5 py-2 rounded-xl transition bg-indigo-600 text-white shadow-sm">
+                    <i class="fa-solid fa-camera-rotate mr-1.5"></i> นักเรียนส่งคลิปสอบ
+                </button>
+                <button onclick="switchTab('multiplication-board')" id="nav-btn-multiplication-board" class="nav-tab px-3.5 py-2 rounded-xl transition text-slate-600 hover:text-indigo-700">
+                    <i class="fa-solid fa-table-cells mr-1.5"></i> ตารางซ้อมท่อง & ความคืบหน้า
+                </button>
+                <button onclick="switchTab('teacher-check')" id="nav-btn-teacher-check" class="nav-tab px-3.5 py-2 rounded-xl transition text-slate-600 hover:text-indigo-700">
+                    <i class="fa-solid fa-chalkboard-user mr-1.5"></i> ครูตรวจคลิป (รหัส 1234)
+                </button>
+                <button onclick="switchTab('certificate')" id="nav-btn-certificate" class="nav-tab px-3.5 py-2 rounded-xl transition text-slate-600 hover:text-indigo-700">
+                    <i class="fa-solid fa-award mr-1.5 text-amber-500"></i> เกียรติบัตรผู้พิชิต
+                </button>
+                <button onclick="switchTab('gas-code')" id="nav-btn-gas-code" class="nav-tab px-3.5 py-2 rounded-xl transition bg-emerald-600 text-white shadow-sm ml-1">
+                    <i class="fa-solid fa-code mr-1.5"></i> โค้ด Code.gs & Index.html
+                </button>
+            </nav>
+
+            <!-- Quick Code Button -->
+            <button onclick="switchTab('gas-code')" class="md:hidden px-3 py-1.5 rounded-xl bg-emerald-600 text-white text-xs font-bold">
+                <i class="fa-solid fa-code mr-1"></i> ดูโค้ด
+            </button>
+        </div>
+    </header>
+
+    <!-- ==========================================
+         MAIN CONTAINER
+         ========================================== -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 pb-24 md:pb-12 space-y-6">
+
+        <!-- ==========================================
+             TAB 1: STUDENT RECORD & SUBMIT VIDEO
+             ========================================== -->
+        <section id="tab-student-submit" class="tab-view space-y-6">
+            <!-- Hero Banner -->
+            <div class="rounded-3xl gradient-indigo text-white p-6 sm:p-8 shadow-xl flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                <div class="space-y-2 max-w-2xl">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 text-xs font-bold backdrop-blur-sm">
+                        <i class="fa-solid fa-sparkles text-amber-300"></i> ระบบส่งคลิปสอบท่องสูตรคูณ แม่ 2 - แม่ 12
+                    </span>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold">ส่งคลิปวิดีโอสอบท่องสูตรคูณให้คุณครู 🎥</h1>
+                    <p class="text-indigo-100 text-xs sm:text-sm font-body">
+                        เลือกชื่อนักเรียน เลือกแม่สูตรคูณที่ต้องการสอบ สามารถกดปุ่ม <strong>"เปิดกล้องอัดคลิป"</strong> จากมือถือ/คอมพิวเตอร์ หรือเลือกอัปโหลดไฟล์วิดีโอที่มีในเครื่องเพื่อส่งให้คุณครูตรวจได้เลย!
+                    </p>
+                </div>
+                <div class="flex flex-wrap gap-3 shrink-0">
+                    <button onclick="switchTab('multiplication-board')" class="px-4 py-3 rounded-2xl bg-amber-400 hover:bg-amber-300 text-slate-900 font-extrabold text-xs sm:text-sm shadow-lg transition flex items-center gap-2">
+                        <i class="fa-solid fa-book-open"></i> เปิดดูตารางสูตรคูณแม่ 2-12
+                    </button>
+                    <button onclick="switchTab('gas-code')" class="px-4 py-3 rounded-2xl bg-white/20 hover:bg-white/30 text-white font-bold text-xs sm:text-sm backdrop-blur-sm transition flex items-center gap-2">
+                        <i class="fa-solid fa-file-code"></i> คัดลอกโค้ดไปวางใน Apps Script
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Submission Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Left Column: Form Details & Cheat Sheet -->
+                <div class="lg:col-span-5 bg-white p-6 rounded-3xl border border-indigo-100 soft-shadow space-y-4">
+                    <h2 class="text-lg font-extrabold text-slate-800 flex items-center gap-2">
+                        <span class="w-7 h-7 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold">1</span>
+                        <span>ข้อมูลนักเรียนและแม่สูตรคูณที่สอบ</span>
+                    </h2>
+
+                    <div class="space-y-3 text-xs sm:text-sm">
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1">เลือกชื่อนักเรียน (หรือพิมพ์เพิ่มใหม่)</label>
+                            <select id="sub-student-select" onchange="onSelectStudentChange()" class="w-full rounded-2xl border border-slate-200 px-3.5 py-2.5 font-semibold bg-slate-50 focus:outline-none focus:border-indigo-500"></select>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-2">
+                            <div class="col-span-2">
+                                <label class="block font-bold text-slate-700 mb-1">ชื่อ-นามสกุลนักเรียน</label>
+                                <input type="text" id="sub-student-name" required value="ด.ญ. มานี มีใจรัก" class="w-full rounded-xl border border-slate-200 px-3.5 py-2 focus:outline-none focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block font-bold text-slate-700 mb-1">ชั้น/เลขที่</label>
+                                <input type="text" id="sub-student-class" required value="ป.3/1 เลขที่ 5" class="w-full rounded-xl border border-slate-200 px-3.5 py-2 focus:outline-none focus:border-indigo-500">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3 pt-1">
+                            <div>
+                                <label class="block font-bold text-slate-700 mb-1">เลือกแม่สูตรคูณที่จะสอบ</label>
+                                <select id="sub-table-num" onchange="updatePracticePreviewCard()" class="w-full rounded-xl border-2 border-indigo-200 bg-indigo-50/50 px-3.5 py-2.5 font-extrabold text-indigo-700 focus:outline-none focus:border-indigo-500">
+                                    <option value="แม่ 2">สูตรคูณ แม่ 2</option>
+                                    <option value="แม่ 3">สูตรคูณ แม่ 3</option>
+                                    <option value="แม่ 4">สูตรคูณ แม่ 4</option>
+                                    <option value="แม่ 5">สูตรคูณ แม่ 5</option>
+                                    <option value="แม่ 6">สูตรคูณ แม่ 6</option>
+                                    <option value="แม่ 7">สูตรคูณ แม่ 7</option>
+                                    <option value="แม่ 8">สูตรคูณ แม่ 8</option>
+                                    <option value="แม่ 9">สูตรคูณ แม่ 9</option>
+                                    <option value="แม่ 10">สูตรคูณ แม่ 10</option>
+                                    <option value="แม่ 11">สูตรคูณ แม่ 11</option>
+                                    <option value="แม่ 12">สูตรคูณ แม่ 12</option>
+                                    <option value="รวมแม่ 2-12">สอบรวบยอด แม่ 2 - แม่ 12</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-bold text-slate-700 mb-1">รูปแบบการท่อง</label>
+                                <select id="sub-exam-mode" class="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 font-semibold focus:outline-none focus:border-indigo-500">
+                                    <option value="ท่องจากหน้าไปหลัง (×1 ถึง ×12)">ท่องปกติ (×1 ถึง ×12)</option>
+                                    <option value="ท่องย้อนกลับ (×12 ถึง ×1)">ท่องย้อนกลับ (×12 ถึง ×1)</option>
+                                    <option value="หลับตาท่องแม่นยำ">หลับตาท่องแม่นยำ</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Mini Multiplication Helper Card -->
+                        <div class="p-4 rounded-2xl bg-indigo-50/70 border border-indigo-100 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-extrabold text-indigo-900" id="preview-card-title"><i class="fa-solid fa-eye mr-1"></i> บทซ้อมท่อง: สูตรคูณ แม่ 2</span>
+                                <button type="button" onclick="toggleHideCheatSheet()" id="btn-toggle-cheat" class="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-white text-indigo-700 border border-indigo-200">
+                                    ซ่อนบทท่องตอนอัดจริง
+                                </button>
+                            </div>
+                            <div id="preview-card-lines" class="grid grid-cols-2 gap-x-4 gap-y-1 text-xs font-mono text-indigo-950 pt-1"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Camera Recorder / Video File Uploader -->
+                <div class="lg:col-span-7 bg-white p-6 rounded-3xl border border-indigo-100 soft-shadow space-y-5">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <h2 class="text-lg font-extrabold text-slate-800 flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold">2</span>
+                            <span>อัดคลิปวิดีโอจากกล้อง หรือ เลือกไฟล์คลิปในเครื่อง</span>
+                        </h2>
+                        <!-- Input Method Switcher -->
+                        <div class="flex bg-slate-100 p-1 rounded-xl text-xs font-bold">
+                            <button type="button" onclick="setVideoSourceMode('camera')" id="src-btn-camera" class="px-3 py-1.5 rounded-lg bg-indigo-600 text-white transition">
+                                <i class="fa-solid fa-video mr-1"></i> อัดจากกล้องสด
+                            </button>
+                            <button type="button" onclick="setVideoSourceMode('upload')" id="src-btn-upload" class="px-3 py-1.5 rounded-lg text-slate-600 transition">
+                                <i class="fa-solid fa-cloud-arrow-up mr-1"></i> อัปโหลดไฟล์คลิป/ลิงก์
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Mode A: WebRTC Camera Recorder -->
+                    <div id="video-mode-camera" class="space-y-4">
+                        <div class="relative rounded-3xl overflow-hidden bg-slate-900 aspect-video flex items-center justify-center border-2 border-indigo-100 shadow-inner">
+                            <video id="live-video-preview" autoplay muted playsinline class="w-full h-full object-cover hidden"></video>
+                            <video id="recorded-video-playback" controls playsinline class="w-full h-full object-cover hidden"></video>
+
+                            <!-- Placeholder before camera starts -->
+                            <div id="camera-placeholder" class="text-center p-6 space-y-3 text-slate-300">
+                                <div class="w-16 h-16 rounded-3xl bg-white/10 flex items-center justify-center text-3xl mx-auto text-indigo-300">
+                                    <i class="fa-solid fa-camera"></i>
+                                </div>
+                                <p class="text-sm font-bold text-white">กดปุ่ม "เปิดกล้องเตรียมอัดคลิป" ด้านล่าง</p>
+                                <p class="text-xs text-slate-400">รองรับกล้องมือถือ แท็บเล็ต และโน้ตบุ๊ก (แนะนำอัดคลิปความยาว 15 - 45 วินาที)</p>
+                            </div>
+
+                            <!-- Recording Status Pill -->
+                            <div id="rec-status-badge" class="hidden absolute top-4 left-4 px-3.5 py-1.5 rounded-full bg-rose-600 text-white text-xs font-extrabold flex items-center gap-2 shadow-lg">
+                                <span class="w-2.5 h-2.5 rounded-full bg-white rec-dot"></span>
+                                <span>กำลังบันทึกเสียงและวิดีโอ...</span>
+                                <span id="rec-timer-text" class="font-mono">00:00</span>
+                            </div>
+                        </div>
+
+                        <!-- Camera Control Buttons -->
+                        <div class="flex flex-wrap items-center justify-center gap-3">
+                            <button type="button" onclick="startCameraStream()" id="btn-open-cam" class="px-4 py-2.5 rounded-2xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs sm:text-sm font-bold transition">
+                                <i class="fa-solid fa-power-off mr-1.5"></i> เปิดกล้องเตรียมอัดคลิป
+                            </button>
+                            <button type="button" onclick="startVideoRecording()" id="btn-start-rec" disabled class="px-5 py-2.5 rounded-2xl bg-rose-600 hover:bg-rose-700 disabled:opacity-40 text-white text-xs sm:text-sm font-extrabold shadow transition">
+                                <i class="fa-solid fa-circle-dot mr-1.5"></i> เริ่มอัดคลิปท่องสูตรคูณ
+                            </button>
+                            <button type="button" onclick="stopVideoRecording()" id="btn-stop-rec" disabled class="px-5 py-2.5 rounded-2xl bg-slate-800 hover:bg-slate-900 disabled:opacity-40 text-white text-xs sm:text-sm font-extrabold shadow transition">
+                                <i class="fa-solid fa-stop mr-1.5"></i> หยุดอัดคลิป
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Mode B: File Upload or External Link -->
+                    <div id="video-mode-upload" class="hidden space-y-4">
+                        <label class="block border-2 border-dashed border-indigo-300 rounded-3xl p-6 text-center cursor-pointer hover:bg-indigo-50/50 transition space-y-2">
+                            <div class="w-14 h-14 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-2xl mx-auto">
+                                <i class="fa-solid fa-file-video"></i>
+                            </div>
+                            <div class="text-sm font-bold text-slate-800">คลิกเลือกไฟล์วิดีโอจากมือถือ / เครื่องคอมพิวเตอร์</div>
+                            <p class="text-xs text-slate-500">รองรับไฟล์ .mp4, .webm, .mov (ขนาดแนะนำไม่เกิน 25 MB เพื่อความรวดเร็วในการอัปโหลดเข้า Google Drive)</p>
+                            <input type="file" id="upload-video-input" accept="video/*" onchange="handleFileSelect(event)" class="hidden">
+                        </label>
+                        <div id="selected-file-info" class="hidden p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-800 font-bold flex items-center justify-between">
+                            <span id="selected-file-name">เลือกไฟล์แล้ว</span>
+                            <button type="button" onclick="clearSelectedVideoFile()" class="text-rose-600 hover:underline">ยกเลิกไฟล์</button>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">หรือวางลิงก์คลิปวิดีโอ (เช่น Google Drive / YouTube / TikTok ถ้ามี)</label>
+                            <input type="url" id="upload-external-link" placeholder="https://drive.google.com/..." class="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-xs sm:text-sm focus:outline-none focus:border-indigo-500">
+                        </div>
+                    </div>
+
+                    <!-- Submit Button & Progress Bar -->
+                    <div class="pt-3 border-t border-slate-100 space-y-3">
+                        <div id="upload-progress-box" class="hidden space-y-1.5">
+                            <div class="flex justify-between text-xs font-bold text-indigo-700">
+                                <span id="upload-progress-status">กำลังอัปโหลดคลิปวิดีโอขึ้น Google Drive ของครู...</span>
+                                <span id="upload-progress-pct">65%</span>
+                            </div>
+                            <div class="w-full h-2.5 bg-indigo-100 rounded-full overflow-hidden">
+                                <div id="upload-progress-bar" class="h-full gradient-indigo transition-all duration-300" style="width: 65%"></div>
+                            </div>
+                        </div>
+
+                        <button type="button" onclick="submitMultiplicationVideo()" id="btn-submit-video" class="w-full py-4 rounded-2xl gradient-indigo text-white font-extrabold text-sm sm:text-base shadow-xl hover:opacity-95 transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>ส่งคลิปวิดีโอสอบท่องสูตรคูณให้คุณครู</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             TAB 2: MULTIPLICATION PRACTICE BOARD & STUDENT PROGRESS
+             ========================================== -->
+        <section id="tab-multiplication-board" class="tab-view hidden space-y-6">
+            <div class="bg-white p-6 rounded-3xl border border-indigo-100 soft-shadow space-y-5">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <span class="text-xs font-bold text-indigo-600 uppercase">PROGRESS & PRACTICE TABLE</span>
+                        <h2 class="text-2xl font-extrabold text-slate-800">ตารางความก้าวหน้าการพิชิตสูตรคูณ แม่ 2 - แม่ 12</h2>
+                        <p class="text-xs text-slate-500">ตรวจสอบว่านักเรียนแต่ละคนส่งคลิปผ่านแม่ไหนไปแล้วบ้าง และคลิกที่แต่ละแม่เพื่อซ้อมท่องได้ทันที</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <label class="text-xs font-bold text-slate-600">ดูความก้าวหน้าของ:</label>
+                        <select id="progress-student-filter" onchange="renderMultiplicationBoard()" class="rounded-xl border border-slate-200 px-3.5 py-2 text-xs sm:text-sm font-bold text-indigo-700"></select>
+                    </div>
+                </div>
+
+                <!-- 11 Multiplication Cards (แม่ 2 - แม่ 12) -->
+                <div id="multiplication-cards-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             TAB 3: TEACHER REVIEW & GRADING DASHBOARD (admin / 1234)
+             ========================================== -->
+        <section id="tab-teacher-check" class="tab-view hidden space-y-6">
+            <!-- Teacher Lock Box -->
+            <div id="teacher-login-gate" class="max-w-md mx-auto bg-white p-6 sm:p-8 rounded-3xl border border-indigo-100 soft-shadow text-center space-y-4 my-6">
+                <div class="w-16 h-16 rounded-2xl gradient-indigo text-white flex items-center justify-center text-2xl mx-auto shadow">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <h3 class="text-xl font-extrabold text-slate-800">เข้าสู่ระบบคุณครูผู้ตรวจคลิป</h3>
+                <p class="text-xs text-slate-500">รหัสผ่านเริ่มต้นสำหรับครู: <strong class="text-indigo-700 font-mono">1234</strong> (ผู้ใช้: <strong class="text-indigo-700 font-mono">admin</strong>)</p>
+                <div class="flex gap-2">
+                    <input type="password" id="teacher-pin-input" value="1234" placeholder="กรอกรหัสครู 1234" class="flex-1 rounded-xl border border-slate-200 px-4 py-2.5 text-center font-bold text-sm focus:outline-none focus:border-indigo-500">
+                    <button onclick="unlockTeacherDashboard()" class="px-5 py-2.5 rounded-xl gradient-indigo text-white font-bold text-sm shadow">
+                        เข้าตรวจงาน
+                    </button>
+                </div>
+            </div>
+
+            <!-- Teacher Review Content -->
+            <div id="teacher-dashboard-content" class="hidden space-y-6">
+                <!-- KPI Cards -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white p-5 rounded-3xl border border-indigo-100 soft-shadow">
+                        <span class="text-xs text-slate-500">คลิปที่ส่งทั้งหมด</span>
+                        <div class="text-2xl font-extrabold text-slate-800 mt-1" id="kpi-total-clips">0 คลิป</div>
+                    </div>
+                    <div class="bg-white p-5 rounded-3xl border border-indigo-100 soft-shadow">
+                        <span class="text-xs text-slate-500">รอครูตรวจให้คะแนน</span>
+                        <div class="text-2xl font-extrabold text-amber-600 mt-1" id="kpi-pending-clips">0 คลิป</div>
+                    </div>
+                    <div class="bg-white p-5 rounded-3xl border border-indigo-100 soft-shadow">
+                        <span class="text-xs text-slate-500">สอบผ่านแล้ว</span>
+                        <div class="text-2xl font-extrabold text-emerald-600 mt-1" id="kpi-passed-clips">0 คลิป</div>
+                    </div>
+                    <div class="bg-white p-5 rounded-3xl border border-indigo-100 soft-shadow">
+                        <span class="text-xs text-slate-500">ส่งออกรายงานคะแนน</span>
+                        <button onclick="exportSubmissionsCSV()" class="mt-2 w-full py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition">
+                            <i class="fa-solid fa-file-excel mr-1"></i> ดาวน์โหลด Excel (CSV)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Submissions Table -->
+                <div class="bg-white p-6 rounded-3xl border border-indigo-100 soft-shadow space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                            <h3 class="text-lg font-extrabold text-slate-800"><i class="fa-solid fa-film text-indigo-600 mr-1.5"></i> รายการคลิปวิดีโอที่นักเรียนส่งเข้าสอบ</h3>
+                            <p class="text-xs text-slate-500">คลิกปุ่ม "เปิดดูคลิป" เพื่อรับชม และกดให้คะแนน / อนุมัติผลสอบผ่านได้ทันที</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <select id="filter-status-select" onchange="renderTeacherSubmissionsTable()" class="rounded-xl border border-slate-200 px-3 py-2 text-xs font-bold">
+                                <option value="ALL">ทุกสถานะ</option>
+                                <option value="รอตรวจ">⏳ รอตรวจ</option>
+                                <option value="ผ่านดีเยี่ยม">✅ ผ่านดีเยี่ยม</option>
+                                <option value="ซ้อมใหม่">🔄 ให้ซ้อมส่งใหม่</option>
+                            </select>
+                            <button onclick="syncFromGoogleScript()" class="px-3.5 py-2 rounded-xl bg-indigo-50 text-indigo-700 border border-indigo-200 text-xs font-bold">
+                                <i class="fa-solid fa-rotate mr-1"></i> ดึงข้อมูลล่าสุดจาก Sheets
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs sm:text-sm">
+                            <thead>
+                                <tr class="border-b border-slate-200 text-slate-500">
+                                    <th class="py-3">วัน-เวลาที่ส่ง</th>
+                                    <th class="py-3">ชื่อนักเรียน</th>
+                                    <th class="py-3">ชั้น</th>
+                                    <th class="py-3">แม่สูตรคูณ</th>
+                                    <th class="py-3">คลิปวิดีโอ</th>
+                                    <th class="py-3">สถานะ</th>
+                                    <th class="py-3">คะแนน / ความเห็นครู</th>
+                                    <th class="py-3 text-right">การตรวจให้คะแนน</th>
+                                </tr>
+                            </thead>
+                            <tbody id="teacher-submissions-tbody" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             TAB 4: CERTIFICATE OF MULTIPLICATION MASTER
+             ========================================== -->
+        <section id="tab-certificate" class="tab-view hidden space-y-6">
+            <div class="bg-white p-6 rounded-3xl border border-indigo-100 soft-shadow grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                <div class="lg:col-span-5 space-y-4">
+                    <span class="text-xs font-bold text-amber-600 uppercase">MULTIPLICATION CHAMPION CERTIFICATE</span>
+                    <h2 class="text-2xl font-extrabold text-slate-800">เกียรติบัตรผู้พิชิตการท่องสูตรคูณ</h2>
+                    <p class="text-xs text-slate-500 font-body">มอบเป็นขวัญและกำลังใจให้นักเรียนที่ส่งคลิปสอบท่องสูตรคูณผ่านเกณฑ์ ดาวน์โหลดเป็นไฟล์ภาพความละเอียดสูงได้ทันที</p>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">เลือกนักเรียน</label>
+                        <select id="cert-student-name" onchange="drawCertificate()" class="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm font-bold"></select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">ระดับความสำเร็จที่ระบุบนเกียรติบัตร</label>
+                        <input type="text" id="cert-achievement" value="ผ่านการทดสอบท่องสูตรคูณ แม่ 2 ถึง แม่ 12 คล่องแคล่วแม่นยำระดับดีเยี่ยม" oninput="drawCertificate()" class="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">ชื่อโรงเรียน</label>
+                        <input type="text" id="cert-school" value="โรงเรียนบึงงามพัฒนา" oninput="drawCertificate()" class="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm">
+                    </div>
+                    <button onclick="downloadCertImage()" class="w-full py-3.5 rounded-2xl gradient-amber text-white font-extrabold text-sm shadow-lg hover:opacity-95 transition">
+                        <i class="fa-solid fa-download mr-1.5"></i> ดาวน์โหลดเกียรติบัตร (PNG)
+                    </button>
+                </div>
+                <div class="lg:col-span-7">
+                    <div class="rounded-3xl overflow-hidden shadow-2xl border-4 border-amber-200 bg-white">
+                        <canvas id="cert-canvas" width="1000" height="700" class="w-full h-auto block"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             TAB 5: FULL GOOGLE APPS SCRIPT CODE (Code.gs + Index.html)
+             ========================================== -->
+        <section id="tab-gas-code" class="tab-view hidden space-y-6">
+            <div class="bg-white p-6 sm:p-8 rounded-3xl border-2 border-emerald-200 soft-shadow space-y-6">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+                    <div>
+                        <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-extrabold">GOOGLE APPS SCRIPT + GOOGLE DRIVE + SHEETS</span>
+                        <h2 class="text-2xl font-extrabold text-slate-800 mt-2">โค้ดสำหรับติดตั้งใน Google Apps Script (ครบทั้ง <code>Code.gs</code> และ <code>Index.html</code>)</h2>
+                        <p class="text-xs sm:text-sm text-slate-600 mt-1 font-body">
+                            ระบบนี้จะสร้างโฟลเดอร์เก็บไฟล์คลิปวิดีโอของนักเรียนใน <strong>Google Drive</strong> อัตโนมัติ และบันทึกลิงก์คลิปพร้อมคะแนนลงใน <strong>Google Sheets</strong> ทันที
+                        </p>
+                    </div>
+                    <div class="flex flex-wrap gap-2.5 shrink-0">
+                        <button onclick="copyCodeGs()" class="px-5 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs sm:text-sm shadow-lg transition flex items-center gap-2">
+                            <i class="fa-solid fa-copy"></i>
+                            <span>1. คัดลอกโค้ด Code.gs</span>
+                        </button>
+                        <button onclick="copyIndexHtml()" class="px-5 py-3 rounded-2xl gradient-indigo text-white font-extrabold text-xs sm:text-sm shadow-lg transition flex items-center gap-2">
+                            <i class="fa-brands fa-html5"></i>
+                            <span>2. คัดลอกโค้ด Index.html</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 3-Step Setup Guide -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs sm:text-sm">
+                    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
+                        <span class="px-2.5 py-0.5 rounded-full bg-emerald-600 text-white font-bold text-xs">ขั้นตอนที่ 1: วางไฟล์ Code.gs</span>
+                        <p class="text-xs text-slate-600 font-body">สร้าง Google Sheets ใหม่ ไปที่เมนู <strong>ส่วนขยาย (Extensions) &gt; Apps Script</strong> ลบโค้ดเดิมออกทั้งหมด แล้วกดปุ่ม <strong>"1. คัดลอกโค้ด Code.gs"</strong> ไปวางแทนที่</p>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
+                        <span class="px-2.5 py-0.5 rounded-full bg-indigo-600 text-white font-bold text-xs">ขั้นตอนที่ 2: สร้างไฟล์ Index.html</span>
+                        <p class="text-xs text-slate-600 font-body">ใน Apps Script กดปุ่ม <strong>+ (เพิ่มไฟล์) &gt; HTML</strong> ตั้งชื่อไฟล์ว่า <strong><code>Index</code></strong> (ตัว I ใหญ่ ไม่ต้องพิมพ์ .html ซ้ำ) แล้วกดปุ่ม <strong>"2. คัดลอกโค้ด Index.html"</strong> ไปวางทับ</p>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
+                        <span class="px-2.5 py-0.5 rounded-full bg-amber-600 text-white font-bold text-xs">ขั้นตอนที่ 3: กด Deploy ใช้งานจริง</span>
+                        <p class="text-xs text-slate-600 font-body">กดบันทึก คลิก <strong>การทำให้ใช้งานได้ (Deploy) &gt; รายการใหม่ &gt; เว็บแอป</strong> ตั้งค่าผู้มีสิทธิ์เข้าถึงเป็น <strong>"ทุกคน (Anyone)"</strong> กดอนุญาตสิทธิ์ Google Drive แล้วส่งลิงก์ให้นักเรียนได้เลย!</p>
+                    </div>
+                </div>
+
+                <!-- Code.gs Textbox -->
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs sm:text-sm font-extrabold text-slate-800">
+                            <i class="fa-solid fa-server text-emerald-600 mr-1.5"></i> ไฟล์ที่ 1: <code>Code.gs</code> (รับไฟล์วิดีโอ Base64 เก็บเข้า Google Drive และบันทึกตาราง Google Sheets)
+                        </span>
+                        <button onclick="copyCodeGs()" class="text-xs font-bold text-emerald-600 hover:underline">คัดลอก Code.gs</button>
+                    </div>
+                    <textarea id="code-gs-box" rows="22" readonly class="w-full font-mono text-xs bg-slate-900 text-emerald-300 p-4 rounded-2xl border border-slate-700 focus:outline-none">/**
+ * ============================================================================
+ * ระบบสอบการท่องสูตรคูณออนไลน์ (Smart Multiplication Video Exam System)
+ * ไฟล์: Code.gs สำหรับ Google Apps Script
+ * ความสามารถ:
+ * 1. สร้างตาราง Google Sheets (Submissions และ Students) อัตโนมัติ
+ * 2. สร้างโฟลเดอร์ใน Google Drive ชื่อ "Multiplication_Exam_Videos" เพื่อเก็บคลิปนักเรียน
+ * 3. รับไฟล์วิดีโอจากการอัดกล้องหน้าเว็บหรืออัปโหลดไฟล์ บันทึกลง Drive และคืนค่าลิงก์ดูคลิป
+ * 4. ระบบครูตรวจให้คะแนนและเปลี่ยนสถานะ (รหัสครู: 1234)
+ * ============================================================================
+ */
+
+var DRIVE_FOLDER_NAME = 'Multiplication_Exam_Videos';
+
+function doGet(e) {
+  initMultiplicationSheets();
+  return HtmlService.createHtmlOutputFromFile('Index')
+    .setTitle('ระบบสอบการท่องสูตรคูณออนไลน์ | ส่งคลิปให้ครู')
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1');
+}
+
+// 1. สร้างตารางเริ่มต้นใน Google Sheets อัตโนมัติ
+function initMultiplicationSheets() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+
+  // ตารางที่ 1: เก็บรายการส่งคลิปสอบสูตรคูณ (Submissions)
+  var subSheet = ss.getSheetByName('Submissions');
+  if (!subSheet) {
+    subSheet = ss.insertSheet('Submissions');
+    subSheet.appendRow([
+      'รหัสรายการ',
+      'วัน-เวลาที่ส่ง',
+      'ชื่อ-นามสกุลนักเรียน',
+      'ชั้น/เลขที่',
+      'แม่สูตรคูณที่สอบ',
+      'รูปแบบการท่อง',
+      'ลิงก์คลิปวิดีโอ (Google Drive)',
+      'สถานะการตรวจ',
+      'คะแนนเต็ม 10',
+      'ข้อเสนอแนะจากครู'
+    ]);
+    subSheet.getRange('A1:J1').setBackground('#4338CA').setFontColor('#FFFFFF').setFontWeight('bold');
+
+    // ข้อมูลตัวอย่างเริ่มต้น
+    subSheet.appendRow([
+      'SUB-1001',
+      Utilities.formatDate(new Date(), 'GMT+7', 'dd/MM/yyyy HH:mm'),
+      'ด.ญ. มานี มีใจรัก',
+      'ป.3/1 เลขที่ 5',
+      'แม่ 2',
+      'ท่องปกติ (×1 ถึง ×12)',
+      'https://drive.google.com/',
+      'ผ่านดีเยี่ยม',
+      10,
+      'ออกเสียงชัดเจน คล่องแคล่วมากครับ'
+    ]);
+  }
+
+  // ตารางที่ 2: รายชื่อนักเรียน (Students)
+  var stdSheet = ss.getSheetByName('Students');
+  if (!stdSheet) {
+    stdSheet = ss.insertSheet('Students');
+    stdSheet.appendRow(['รหัสนักเรียน', 'ชื่อ-นามสกุล', 'ชั้น/เลขที่']);
+    stdSheet.getRange('A1:C1').setBackground('#047857').setFontColor('#FFFFFF').setFontWeight('bold');
+    stdSheet.appendRow(['STD-01', 'ด.ญ. มานี มีใจรัก', 'ป.3/1 เลขที่ 5']);
+    stdSheet.appendRow(['STD-02', 'ด.ช. กล้าหาญ รักเรียน', 'ป.3/1 เลขที่ 8']);
+    stdSheet.appendRow(['STD-03', 'ด.ญ. ชูใจ ใฝ่ศึกษา', 'ป.3/1 เลขที่ 12']);
+    stdSheet.appendRow(['STD-04', 'ด.ช. ปิติ รักป่าไม้', 'ป.3/2 เลขที่ 3']);
+  }
+
+  return true;
+}
+
+// 2. ค้นหาหรือสร้างโฟลเดอร์เก็บคลิปวิดีโอใน Google Drive
+function getOrCreateVideoFolder() {
+  var folders = DriveApp.getFoldersByName(DRIVE_FOLDER_NAME);
+  if (folders.hasNext()) {
+    return folders.next();
+  }
+  var newFolder = DriveApp.createFolder(DRIVE_FOLDER_NAME);
+  newFolder.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+  return newFolder;
+}
+
+// 3. ดึงข้อมูลทั้งหมดไปแสดงบนหน้าเว็บ
+function getExamSystemData() {
+  initMultiplicationSheets();
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+
+  var stdRows = ss.getSheetByName('Students').getDataRange().getValues();
+  var students = [];
+  for (var i = 1; i < stdRows.length; i++) {
+    if (stdRows[i][1]) {
+      students.push({
+        id: String(stdRows[i][0]),
+        name: String(stdRows[i][1]),
+        className: String(stdRows[i][2])
+      });
+    }
+  }
+
+  var subRows = ss.getSheetByName('Submissions').getDataRange().getValues();
+  var submissions = [];
+  for (var j = 1; j < subRows.length; j++) {
+    if (subRows[j][0]) {
+      submissions.unshift({
+        id: String(subRows[j][0]),
+        timestamp: String(subRows[j][1]),
+        studentName: String(subRows[j][2]),
+        studentClass: String(subRows[j][3]),
+        tableNum: String(subRows[j][4]),
+        examMode: String(subRows[j][5]),
+        videoUrl: String(subRows[j][6]),
+        status: String(subRows[j][7] || 'รอตรวจ'),
+        score: Number(subRows[j][8] || 0),
+        feedback: String(subRows[j][9] || '')
+      });
+    }
+  }
+
+  return { students: students, submissions: submissions };
+}
+
+// 4. บันทึกคลิปวิดีโอของนักเรียนลง Google Drive และบันทึกลง Google Sheets
+function submitStudentVideoToDrive(payload) {
+  initMultiplicationSheets();
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var subSheet = ss.getSheetByName('Submissions');
+  var videoUrl = payload.externalUrl || '';
+
+  // กรณีมีไฟล์วิดีโอ Base64 ส่งมาจากหน้าเว็บ ให้อัปโหลดเข้า Google Drive
+  if (payload.base64Data && payload.mimeType) {
+    var folder = getOrCreateVideoFolder();
+    var decoded = Utilities.base64Decode(payload.base64Data);
+    var safeFileName = payload.studentName + '_' + payload.tableNum + '_' + new Date().getTime() + '.webm';
+    if (payload.fileName) safeFileName = payload.studentName + '_' + payload.tableNum + '_' + payload.fileName;
+
+    var blob = Utilities.newBlob(decoded, payload.mimeType, safeFileName);
+    var file = folder.createFile(blob);
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    videoUrl = file.getUrl();
+  }
+
+  var newId = 'SUB-' + new Date().getTime().toString().slice(-5);
+  var nowStr = Utilities.formatDate(new Date(), 'GMT+7', 'dd/MM/yyyy HH:mm');
+
+  subSheet.appendRow([
+    newId,
+    nowStr,
+    payload.studentName,
+    payload.studentClass,
+    payload.tableNum,
+    payload.examMode,
+    videoUrl,
+    'รอตรวจ',
+    0,
+    'รอคุณครูตรวจให้คะแนน'
+  ]);
+
+  return getExamSystemData();
+}
+
+// 5. ฟังก์ชันสำหรับคุณครูบันทึกผลตรวจ ให้คะแนน และคอมเมนต์
+function updateTeacherGrade(gradeData) {
+  initMultiplicationSheets();
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var subSheet = ss.getSheetByName('Submissions');
+  var data = subSheet.getDataRange().getValues();
+
+  for (var i = 1; i < data.length; i++) {
+    if (String(data[i][0]) === String(gradeData.id)) {
+      subSheet.getRange(i + 1, 8).setValue(gradeData.status);
+      subSheet.getRange(i + 1, 9).setValue(Number(gradeData.score));
+      subSheet.getRange(i + 1, 10).setValue(gradeData.feedback);
+      break;
+    }
+  }
+  return getExamSystemData();
+}</textarea>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==========================================
+         MOBILE BOTTOM NAVIGATION
+         ========================================== -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-40 flex justify-around py-2 text-[11px] font-bold">
+        <button onclick="switchTab('student-submit')" class="flex flex-col items-center text-indigo-600">
+            <i class="fa-solid fa-camera-rotate text-base"></i>
+            <span>ส่งคลิปสอบ</span>
+        </button>
+        <button onclick="switchTab('multiplication-board')" class="flex flex-col items-center text-slate-600">
+            <i class="fa-solid fa-table-cells text-base"></i>
+            <span>ตารางสูตรคูณ</span>
+        </button>
+        <button onclick="switchTab('teacher-check')" class="flex flex-col items-center text-slate-600">
+            <i class="fa-solid fa-chalkboard-user text-base"></i>
+            <span>ครูตรวจคลิป</span>
+        </button>
+        <button onclick="switchTab('gas-code')" class="flex flex-col items-center text-emerald-600">
+            <i class="fa-solid fa-code text-base"></i>
+            <span>รับโค้ด GAS</span>
+        </button>
+    </nav>
+
+    <!-- ==========================================
+         MODAL: TEACHER VIDEO PLAYER & GRADING
+         ========================================== -->
+    <div id="grade-video-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl border border-indigo-100">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-extrabold text-slate-800" id="modal-grade-title">ตรวจคลิปสอบท่องสูตรคูณ</h3>
+                <button onclick="closeGradeModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <!-- Video Player or Drive Link -->
+            <div id="modal-video-container" class="rounded-2xl overflow-hidden bg-slate-900 aspect-video flex items-center justify-center"></div>
+
+            <form onsubmit="saveTeacherGrading(event)" class="space-y-3 text-xs sm:text-sm">
+                <input type="hidden" id="grade-sub-id">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">ผลการประเมิน</label>
+                        <select id="grade-status" class="w-full rounded-xl border border-slate-200 px-3 py-2 font-bold">
+                            <option value="ผ่านดีเยี่ยม">✅ ผ่านดีเยี่ยม</option>
+                            <option value="ซ้อมใหม่">🔄 ให้ซ้อมส่งใหม่</option>
+                            <option value="รอตรวจ">⏳ รอตรวจ</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">คะแนนที่ได้ (เต็ม 10)</label>
+                        <input type="number" id="grade-score" min="0" max="10" value="10" required class="w-full rounded-xl border border-slate-200 px-3 py-2 font-extrabold text-indigo-700 text-center">
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">คำชมเชย / ข้อเสนอแนะจากคุณครู</label>
+                    <input type="text" id="grade-feedback" value="ท่องได้คล่องแคล่ว เสียงดังฟังชัด เก่งมากครับ!" class="w-full rounded-xl border border-slate-200 px-3.5 py-2">
+                </div>
+                <div class="flex gap-2 pt-2">
+                    <button type="button" onclick="closeGradeModal()" class="flex-1 py-2.5 rounded-xl bg-slate-100 text-slate-700 font-bold">ปิดหน้าต่าง</button>
+                    <button type="submit" class="flex-1 py-2.5 rounded-xl gradient-indigo text-white font-bold shadow">บันทึกผลตรวจ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast-alert" class="fixed bottom-6 right-6 z-50 hidden items-center space-x-3 bg-slate-900 text-white px-5 py-3.5 rounded-2xl shadow-2xl text-xs sm:text-sm">
+        <i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+        <span id="toast-msg">ดำเนินการสำเร็จ</span>
+    </div>
+
+    <!-- ==========================================
+         JAVASCRIPT LOGIC (WEBRTC CAMERA + GAS BRIDGE)
+         ========================================== -->
+    <script>
+        const APP = {
+            videoSourceMode: 'camera', // 'camera' | 'upload'
+            mediaStream: null,
+            mediaRecorder: null,
+            recordedChunks: [],
+            recordedBlob: null,
+            recSeconds: 0,
+            recInterval: null,
+            selectedFile: null,
+            cheatSheetHidden: false,
+            teacherUnlocked: false,
+            students: [
+                { id: 'STD-01', name: 'ด.ญ. มานี มีใจรัก', className: 'ป.3/1 เลขที่ 5' },
+                { id: 'STD-02', name: 'ด.ช. กล้าหาญ รักเรียน', className: 'ป.3/1 เลขที่ 8' },
+                { id: 'STD-03', name: 'ด.ญ. ชูใจ ใฝ่ศึกษา', className: 'ป.3/1 เลขที่ 12' },
+                { id: 'STD-04', name: 'ด.ช. ปิติ รักป่าไม้', className: 'ป.3/2 เลขที่ 3' }
+            ],
+            submissions: [
+                {
+                    id: 'SUB-1003',
+                    timestamp: '13/11/2569 09:15',
+                    studentName: 'ด.ญ. มานี มีใจรัก',
+                    studentClass: 'ป.3/1 เลขที่ 5',
+                    tableNum: 'แม่ 2',
+                    examMode: 'ท่องปกติ (×1 ถึง ×12)',
+                    videoUrl: '',
+                    localBlobUrl: '',
+                    status: 'ผ่านดีเยี่ยม',
+                    score: 10,
+                    feedback: 'ท่องคล่องแคล่วชัดเจนดีมาก!'
+                },
+                {
+                    id: 'SUB-1002',
+                    timestamp: '13/11/2569 10:05',
+                    studentName: 'ด.ญ. มานี มีใจรัก',
+                    studentClass: 'ป.3/1 เลขที่ 5',
+                    tableNum: 'แม่ 3',
+                    examMode: 'ท่องปกติ (×1 ถึง ×12)',
+                    videoUrl: '',
+                    localBlobUrl: '',
+                    status: 'ผ่านดีเยี่ยม',
+                    score: 10,
+                    feedback: 'แม่นยำมากครับ เก่งมาก'
+                },
+                {
+                    id: 'SUB-1001',
+                    timestamp: '13/11/2569 11:20',
+                    studentName: 'ด.ช. กล้าหาญ รักเรียน',
+                    studentClass: 'ป.3/1 เลขที่ 8',
+                    tableNum: 'แม่ 5',
+                    examMode: 'หลับตาท่องแม่นยำ',
+                    videoUrl: '',
+                    localBlobUrl: '',
+                    status: 'รอตรวจ',
+                    score: 0,
+                    feedback: 'รอคุณครูตรวจให้คะแนน'
+                }
+            ]
+        };
+
+        function isRunningInGAS() {
+            return typeof google !== 'undefined' && google.script && google.script.run;
+        }
+
+        // --- Navigation ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-view').forEach(el => el.classList.add('hidden'));
+            const target = document.getElementById(`tab-${tabId}`);
+            if (target) target.classList.remove('hidden');
+
+            document.querySelectorAll('.nav-tab').forEach(btn => {
+                if (btn.id === 'nav-btn-gas-code') return;
+                btn.className = 'nav-tab px-3.5 py-2 rounded-xl transition text-slate-600 hover:text-indigo-700';
+            });
+            const activeBtn = document.getElementById(`nav-btn-${tabId}`);
+            if (activeBtn && tabId !== 'gas-code') {
+                activeBtn.className = 'nav-tab px-3.5 py-2 rounded-xl transition bg-indigo-600 text-white shadow-sm';
+            }
+
+            if (tabId === 'multiplication-board') renderMultiplicationBoard();
+            if (tabId === 'teacher-check') renderTeacherSubmissionsTable();
+            if (tabId === 'certificate') {
+                populateStudentDropdowns();
+                setTimeout(drawCertificate, 50);
+            }
+        }
+
+        // --- Populate Student Selectors ---
+        function populateStudentDropdowns() {
+            const subSel = document.getElementById('sub-student-select');
+            const progSel = document.getElementById('progress-student-filter');
+            const certSel = document.getElementById('cert-student-name');
+
+            const html = APP.students.map((s, idx) => `<option value="${idx}">${s.name} (${s.className})</option>`).join('');
+            if (subSel) subSel.innerHTML = html;
+            if (progSel) progSel.innerHTML = APP.students.map(s => `<option value="${s.name}">${s.name} (${s.className})</option>`).join('');
+            if (certSel) certSel.innerHTML = APP.students.map(s => `<option value="${s.name}">${s.name} (${s.className})</option>`).join('');
+        }
+
+        function onSelectStudentChange() {
+            const idx = document.getElementById('sub-student-select').value;
+            const st = APP.students[idx];
+            if (st) {
+                document.getElementById('sub-student-name').value = st.name;
+                document.getElementById('sub-student-class').value = st.className;
+            }
+        }
+
+        // --- Practice Multiplication Preview ---
+        function updatePracticePreviewCard() {
+            const tableStr = document.getElementById('sub-table-num').value;
+            document.getElementById('preview-card-title').innerHTML = `<i class="fa-solid fa-eye mr-1"></i> บทซ้อมท่อง: สูตรคูณ ${tableStr}`;
+            const numMatch = tableStr.match(/\d+/);
+            const baseNum = numMatch ? parseInt(numMatch[0], 10) : 2;
+
+            const container = document.getElementById('preview-card-lines');
+            if (APP.cheatSheetHidden) {
+                container.innerHTML = `<div class="col-span-2 text-center py-4 text-indigo-500 font-sans font-bold">🙈 ซ่อนตารางสูตรคูณไว้เพื่อทดสอบความจำตอนอัดคลิป</div>`;
+                return;
+            }
+
+            let lines = [];
+            for (let i = 1; i <= 12; i++) {
+                lines.push(`<div>${baseNum} × ${i} = <strong>${baseNum * i}</strong></div>`);
+            }
+            container.innerHTML = lines.join('');
+        }
+
+        function toggleHideCheatSheet() {
+            APP.cheatSheetHidden = !APP.cheatSheetHidden;
+            document.getElementById('btn-toggle-cheat').textContent = APP.cheatSheetHidden ? 'แสดงบทท่อง' : 'ซ่อนบทท่องตอนอัดจริง';
+            updatePracticePreviewCard();
+        }
+
+        // --- Video Recording & Upload Mode ---
+        function setVideoSourceMode(mode) {
+            APP.videoSourceMode = mode;
+            document.getElementById('video-mode-camera').classList.toggle('hidden', mode !== 'camera');
+            document.getElementById('video-mode-upload').classList.toggle('hidden', mode !== 'upload');
+
+            document.getElementById('src-btn-camera').className = mode === 'camera'
+                ? 'px-3 py-1.5 rounded-lg bg-indigo-600 text-white transition'
+                : 'px-3 py-1.5 rounded-lg text-slate-600 transition';
+            document.getElementById('src-btn-upload').className = mode === 'upload'
+                ? 'px-3 py-1.5 rounded-lg bg-indigo-600 text-white transition'
+                : 'px-3 py-1.5 rounded-lg text-slate-600 transition';
+        }
+
+        async function startCameraStream() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                APP.mediaStream = stream;
+                const liveVideo = document.getElementById('live-video-preview');
+                liveVideo.srcObject = stream;
+                liveVideo.classList.remove('hidden');
+                document.getElementById('recorded-video-playback').classList.add('hidden');
+                document.getElementById('camera-placeholder').classList.add('hidden');
+                document.getElementById('btn-start-rec').disabled = false;
+                showToast('เปิดกล้องและไมโครโฟนสำเร็จ! กดปุ่ม "เริ่มอัดคลิป" ได้เลยครับ');
+            } catch (err) {
+                showToast('ไม่สามารถเปิดกล้องได้ (กรุณาอนุญาตสิทธิ์กล้อง หรือสลับไปโหมดอัปโหลดไฟล์คลิปแทน)');
+                setVideoSourceMode('upload');
+            }
+        }
+
+        function startVideoRecording() {
+            if (!APP.mediaStream) return;
+            APP.recordedChunks = [];
+            APP.recordedBlob = null;
+
+            const liveVideo = document.getElementById('live-video-preview');
+            liveVideo.classList.remove('hidden');
+            document.getElementById('recorded-video-playback').classList.add('hidden');
+
+            try {
+                APP.mediaRecorder = new MediaRecorder(APP.mediaStream);
+            } catch (e) {
+                APP.mediaRecorder = new MediaRecorder(APP.mediaStream);
+            }
+
+            APP.mediaRecorder.ondataavailable = (event) => {
+                if (event.data && event.data.size > 0) {
+                    APP.recordedChunks.push(event.data);
+                }
+            };
+
+            APP.mediaRecorder.onstop = () => {
+                const blob = new Blob(APP.recordedChunks, { type: 'video/webm' });
+                APP.recordedBlob = blob;
+                const videoURL = URL.createObjectURL(blob);
+                const playback = document.getElementById('recorded-video-playback');
+                playback.src = videoURL;
+                playback.classList.remove('hidden');
+                liveVideo.classList.add('hidden');
+            };
+
+            APP.mediaRecorder.start();
+            document.getElementById('btn-start-rec').disabled = true;
+            document.getElementById('btn-stop-rec').disabled = false;
+            document.getElementById('rec-status-badge').classList.remove('hidden');
+
+            APP.recSeconds = 0;
+            updateRecTimer();
+            APP.recInterval = setInterval(() => {
+                APP.recSeconds++;
+                updateRecTimer();
+            }, 1000);
+        }
+
+        function stopVideoRecording() {
+            if (APP.mediaRecorder && APP.mediaRecorder.state !== 'inactive') {
+                APP.mediaRecorder.stop();
+            }
+            clearInterval(APP.recInterval);
+            document.getElementById('btn-start-rec').disabled = false;
+            document.getElementById('btn-stop-rec').disabled = true;
+            document.getElementById('rec-status-badge').classList.add('hidden');
+            showToast('บันทึกคลิปวิดีโอเสร็จแล้ว! สามารถกดเปิดดูหรือกดส่งให้คุณครูได้เลย');
+        }
+
+        function updateRecTimer() {
+            const m = String(Math.floor(APP.recSeconds / 60)).padStart(2, '0');
+            const s = String(APP.recSeconds % 60).padStart(2, '0');
+            document.getElementById('rec-timer-text').textContent = `${m}:${s}`;
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files?.[0];
+            if (!file) return;
+            APP.selectedFile = file;
+            document.getElementById('selected-file-info').classList.remove('hidden');
+            document.getElementById('selected-file-name').textContent = `ไฟล์ที่เลือก: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+            showToast(`เลือกไฟล์วิดีโอ "${file.name}" เรียบร้อยแล้ว`);
+        }
+
+        function clearSelectedVideoFile() {
+            APP.selectedFile = null;
+            document.getElementById('upload-video-input').value = '';
+            document.getElementById('selected-file-info').classList.add('hidden');
+        }
+
+        // Convert Blob/File to Base64 for Google Apps Script upload
+        function blobToBase64(blob) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    const base64String = reader.result.split(',')[1];
+                    resolve(base64String);
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+        }
+
+        // --- Submit Video to Teacher (Google Drive + Sheets) ---
+        async function submitMultiplicationVideo() {
+            const studentName = document.getElementById('sub-student-name').value.trim();
+            const studentClass = document.getElementById('sub-student-class').value.trim();
+            const tableNum = document.getElementById('sub-table-num').value;
+            const examMode = document.getElementById('sub-exam-mode').value;
+            const externalUrl = document.getElementById('upload-external-link').value.trim();
+
+            if (!studentName) {
+                showToast('กรุณากรอกชื่อนักเรียนก่อนส่งคลิปครับ');
+                return;
+            }
+
+            let targetBlob = null;
+            let fileName = 'recorded_clip.webm';
+            if (APP.videoSourceMode === 'camera' && APP.recordedBlob) {
+                targetBlob = APP.recordedBlob;
+            } else if (APP.videoSourceMode === 'upload' && APP.selectedFile) {
+                targetBlob = APP.selectedFile;
+                fileName = APP.selectedFile.name;
+            }
+
+            const progressBox = document.getElementById('upload-progress-box');
+            const submitBtn = document.getElementById('btn-submit-video');
+            progressBox.classList.remove('hidden');
+            submitBtn.disabled = true;
+
+            const localPreviewUrl = targetBlob ? URL.createObjectURL(targetBlob) : externalUrl;
+
+            // If running inside Google Apps Script, upload Base64 to Google Drive
+            if (isRunningInGAS()) {
+                try {
+                    let base64Data = null;
+                    let mimeType = null;
+                    if (targetBlob) {
+                        base64Data = await blobToBase64(targetBlob);
+                        mimeType = targetBlob.type || 'video/webm';
+                    }
+                    google.script.run
+                        .withSuccessHandler(res => {
+                            if (res && res.submissions) APP.submissions = res.submissions;
+                            progressBox.classList.add('hidden');
+                            submitBtn.disabled = false;
+                            showToast(`ส่งคลิปสอบ ${tableNum} ของ "${studentName}" เข้า Google Drive สำเร็จ!`);
+                            switchTab('multiplication-board');
+                        })
+                        .withFailureHandler(err => {
+                            progressBox.classList.add('hidden');
+                            submitBtn.disabled = false;
+                            showToast('เกิดข้อผิดพลาด: ' + err.message);
+                        })
+                        .submitStudentVideoToDrive({
+                            studentName,
+                            studentClass,
+                            tableNum,
+                            examMode,
+                            externalUrl,
+                            base64Data,
+                            mimeType,
+                            fileName
+                        });
+                    return;
+                } catch (e) {
+                    // Fallback to local preview state
+                }
+            }
+
+            // Local Preview Simulation
+            setTimeout(() => {
+                const newSub = {
+                    id: 'SUB-' + Date.now().toString().slice(-4),
+                    timestamp: new Date().toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' }),
+                    studentName,
+                    studentClass,
+                    tableNum,
+                    examMode,
+                    videoUrl: externalUrl || 'https://drive.google.com/',
+                    localBlobUrl: localPreviewUrl,
+                    status: 'รอตรวจ',
+                    score: 0,
+                    feedback: 'ส่งคลิปเรียบร้อย รอคุณครูตรวจให้คะแนน'
+                };
+                APP.submissions.unshift(newSub);
+                progressBox.classList.add('hidden');
+                submitBtn.disabled = false;
+                showToast(`ส่งคลิปสอบ "${tableNum}" ของ ${studentName} ให้คุณครูเรียบร้อยแล้ว!`);
+                switchTab('multiplication-board');
+            }, 900);
+        }
+
+        // --- Multiplication Board & Student Progress ---
+        function renderMultiplicationBoard() {
+            const selectedStudent = document.getElementById('progress-student-filter')?.value || APP.students[0].name;
+            const grid = document.getElementById('multiplication-cards-grid');
+            if (!grid) return;
+
+            let html = '';
+            for (let m = 2; m <= 12; m++) {
+                const label = `แม่ ${m}`;
+                const subRecord = APP.submissions.find(s => s.studentName === selectedStudent && s.tableNum === label);
+
+                let statusBadge = `<span class="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[11px] font-bold">ยังไม่ได้ส่งคลิป</span>`;
+                let borderCls = 'border-slate-200';
+                if (subRecord) {
+                    if (subRecord.status === 'ผ่านดีเยี่ยม') {
+                        statusBadge = `<span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-bold">✅ ผ่านแล้ว (${subRecord.score}/10)</span>`;
+                        borderCls = 'border-emerald-300 bg-emerald-50/20';
+                    } else if (subRecord.status === 'รอตรวจ') {
+                        statusBadge = `<span class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[11px] font-bold">⏳ ส่งแล้ว รอครูตรวจ</span>`;
+                        borderCls = 'border-amber-300 bg-amber-50/20';
+                    } else {
+                        statusBadge = `<span class="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 text-[11px] font-bold">🔄 ซ้อมส่งใหม่</span>`;
+                    }
+                }
+
+                let rows = '';
+                for (let i = 1; i <= 12; i++) {
+                    rows += `<div class="flex justify-between py-0.5 border-b border-slate-100 text-xs font-mono"><span>${m} × ${i}</span><span class="font-bold text-indigo-700">= ${m * i}</span></div>`;
+                }
+
+                html += `
+                    <div class="p-4 rounded-3xl border-2 ${borderCls} bg-white soft-shadow flex flex-col justify-between space-y-3">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-base font-extrabold text-indigo-900">สูตรคูณ แม่ ${m}</span>
+                                ${statusBadge}
+                            </div>
+                            <div class="grid grid-cols-2 gap-x-4 px-2 py-1.5 rounded-2xl bg-slate-50">
+                                ${rows}
+                            </div>
+                        </div>
+                        <button onclick="quickSelectTableToRecord('แม่ ${m}')" class="w-full py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs transition">
+                            <i class="fa-solid fa-video mr-1"></i> อัดคลิปส่งสอบ แม่ ${m}
+                        </button>
+                    </div>
+                `;
+            }
+            grid.innerHTML = html;
+        }
+
+        function quickSelectTableToRecord(tableLabel) {
+            document.getElementById('sub-table-num').value = tableLabel;
+            updatePracticePreviewCard();
+            switchTab('student-submit');
+            showToast(`เลือก "${tableLabel}" แล้ว! กดเปิดกล้องเพื่ออัดคลิปส่งครูได้เลย`);
+        }
+
+        // --- Teacher Dashboard & Grading ---
+        function unlockTeacherDashboard() {
+            const pin = document.getElementById('teacher-pin-input').value.trim();
+            if (pin === '1234' || pin === 'admin') {
+                APP.teacherUnlocked = true;
+                document.getElementById('teacher-login-gate').classList.add('hidden');
+                document.getElementById('teacher-dashboard-content').classList.remove('hidden');
+                renderTeacherSubmissionsTable();
+                showToast('เข้าสู่ระบบครูผู้ตรวจเรียบร้อยแล้ว');
+            } else {
+                showToast('รหัสผ่านไม่ถูกต้อง (ใช้รหัส 1234)');
+            }
+        }
+
+        function renderTeacherSubmissionsTable() {
+            const total = APP.submissions.length;
+            const pending = APP.submissions.filter(s => s.status === 'รอตรวจ').length;
+            const passed = APP.submissions.filter(s => s.status === 'ผ่านดีเยี่ยม').length;
+
+            document.getElementById('kpi-total-clips').textContent = `${total} คลิป`;
+            document.getElementById('kpi-pending-clips').textContent = `${pending} คลิป`;
+            document.getElementById('kpi-passed-clips').textContent = `${passed} คลิป`;
+
+            const statusFilter = document.getElementById('filter-status-select')?.value || 'ALL';
+            const filtered = APP.submissions.filter(s => statusFilter === 'ALL' || s.status === statusFilter);
+
+            const tbody = document.getElementById('teacher-submissions-tbody');
+            if (!tbody) return;
+
+            tbody.innerHTML = filtered.map(sub => {
+                let badgeCls = 'bg-amber-100 text-amber-800';
+                if (sub.status === 'ผ่านดีเยี่ยม') badgeCls = 'bg-emerald-100 text-emerald-800';
+                if (sub.status === 'ซ้อมใหม่') badgeCls = 'bg-rose-100 text-rose-800';
+
+                return `
+                    <tr class="hover:bg-slate-50">
+                        <td class="py-3 text-xs text-slate-500">${sub.timestamp}</td>
+                        <td class="py-3 font-bold text-slate-800">${sub.studentName}</td>
+                        <td class="py-3 text-slate-600">${sub.studentClass}</td>
+                        <td class="py-3"><span class="px-2.5 py-1 rounded-xl bg-indigo-50 text-indigo-700 font-extrabold text-xs">${sub.tableNum}</span></td>
+                        <td class="py-3">
+                            <button onclick="openGradeModal('${sub.id}')" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm transition">
+                                <i class="fa-solid fa-play mr-1"></i> เปิดดูคลิป & ตรวจ
+                            </button>
+                        </td>
+                        <td class="py-3"><span class="px-2.5 py-1 rounded-full text-xs font-bold ${badgeCls}">${sub.status}</span></td>
+                        <td class="py-3 text-xs">
+                            <strong class="text-indigo-700">${sub.score}/10 คะแนน</strong>
+                            <div class="text-slate-500">${sub.feedback}</div>
+                        </td>
+                        <td class="py-3 text-right">
+                            <button onclick="quickApprovePass('${sub.id}')" class="px-2.5 py-1.5 rounded-xl bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-xs font-bold transition">
+                                ✅ ให้ผ่าน 10/10
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function openGradeModal(subId) {
+            const sub = APP.submissions.find(s => s.id === subId);
+            if (!sub) return;
+            document.getElementById('grade-sub-id').value = sub.id;
+            document.getElementById('modal-grade-title').textContent = `ตรวจคลิป: ${sub.studentName} (${sub.tableNum})`;
+            document.getElementById('grade-status').value = sub.status === 'รอตรวจ' ? 'ผ่านดีเยี่ยม' : sub.status;
+            document.getElementById('grade-score').value = sub.score || 10;
+            document.getElementById('grade-feedback').value = sub.feedback === 'รอคุณครูตรวจให้คะแนน' ? 'ท่องได้คล่องแคล่ว เสียงดังฟังชัด เก่งมากครับ!' : sub.feedback;
+
+            const vBox = document.getElementById('modal-video-container');
+            if (sub.localBlobUrl) {
+                vBox.innerHTML = `<video src="${sub.localBlobUrl}" controls autoplay class="w-full h-full object-cover"></video>`;
+            } else if (sub.videoUrl && sub.videoUrl !== 'https://drive.google.com/') {
+                vBox.innerHTML = `
+                    <div class="text-center p-6 space-y-3 text-white">
+                        <i class="fa-brands fa-google-drive text-4xl text-emerald-400"></i>
+                        <p class="text-sm font-bold">คลิปวิดีโอถูกเก็บไว้ใน Google Drive เรียบร้อยแล้ว</p>
+                        <a href="${sub.videoUrl}" target="_blank" class="inline-block px-4 py-2 rounded-xl bg-emerald-500 text-white text-xs font-bold">คลิกเปิดดูคลิปใน Google Drive ↗</a>
+                    </div>
+                `;
+            } else {
+                vBox.innerHTML = `
+                    <div class="text-center p-6 space-y-2 text-slate-300">
+                        <i class="fa-solid fa-video text-3xl text-indigo-400"></i>
+                        <p class="text-xs">ตัวอย่างคลิปจำลองของ ${sub.studentName} (${sub.tableNum})</p>
+                    </div>
+                `;
+            }
+
+            const modal = document.getElementById('grade-video-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeGradeModal() {
+            const modal = document.getElementById('grade-video-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.getElementById('modal-video-container').innerHTML = '';
+        }
+
+        function saveTeacherGrading(e) {
+            e.preventDefault();
+            const id = document.getElementById('grade-sub-id').value;
+            const status = document.getElementById('grade-status').value;
+            const score = parseInt(document.getElementById('grade-score').value, 10) || 10;
+            const feedback = document.getElementById('grade-feedback').value.trim();
+
+            const sub = APP.submissions.find(s => s.id === id);
+            if (sub) {
+                sub.status = status;
+                sub.score = score;
+                sub.feedback = feedback;
+            }
+            closeGradeModal();
+            renderTeacherSubmissionsTable();
+
+            if (isRunningInGAS()) {
+                google.script.run.updateTeacherGrade({ id, status, score, feedback });
+            }
+            showToast(`บันทึกผลตรวจของ ${sub ? sub.studentName : ''} เรียบร้อยแล้ว`);
+        }
+
+        function quickApprovePass(subId) {
+            const sub = APP.submissions.find(s => s.id === subId);
+            if (!sub) return;
+            sub.status = 'ผ่านดีเยี่ยม';
+            sub.score = 10;
+            sub.feedback = 'ท่องสูตรคูณถูกต้องคล่องแคล่วดีเยี่ยม!';
+            renderTeacherSubmissionsTable();
+            if (isRunningInGAS()) {
+                google.script.run.updateTeacherGrade({ id: subId, status: sub.status, score: 10, feedback: sub.feedback });
+            }
+            showToast(`อนุมัติผ่าน 10/10 คะแนนให้ ${sub.studentName} (${sub.tableNum})`);
+        }
+
+        function syncFromGoogleScript() {
+            if (isRunningInGAS()) {
+                showToast('กำลังดึงข้อมูลล่าสุดจาก Google Sheets...');
+                google.script.run
+                    .withSuccessHandler(res => {
+                        if (res && res.students) APP.students = res.students;
+                        if (res && res.submissions) APP.submissions = res.submissions;
+                        populateStudentDropdowns();
+                        renderTeacherSubmissionsTable();
+                        showToast('ซิงค์ข้อมูลจาก Google Sheets สำเร็จ!');
+                    })
+                    .getExamSystemData();
+            } else {
+                showToast('เมื่อนำโค้ดไปวางใน Google Apps Script ระบบจะดึงข้อมูลจากชีตอัตโนมัติครับ');
+            }
+        }
+
+        function exportSubmissionsCSV() {
+            const header = ['รหัส,วัน-เวลา,ชื่อนักเรียน,ชั้น,แม่สูตรคูณ,รูปแบบ,สถานะ,คะแนน,ความเห็นครู'];
+            const rows = APP.submissions.map(s => `"${s.id}","${s.timestamp}","${s.studentName}","${s.studentClass}","${s.tableNum}","${s.examMode}","${s.status}",${s.score},"${s.feedback}"`);
+            const blob = new Blob(['\uFEFF' + header.concat(rows).join('\n')], { type: 'text/csv;charset=utf-8;' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'Multiplication-Exam-Report.csv';
+            a.click();
+            showToast('ดาวน์โหลดไฟล์ Excel (CSV) เรียบร้อยแล้ว');
+        }
+
+        // --- Certificate Generator ---
+        function drawCertificate() {
+            const canvas = document.getElementById('cert-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const name = document.getElementById('cert-student-name')?.value || 'ด.ญ. มานี มีใจรัก';
+            const achieve = document.getElementById('cert-achievement')?.value || 'ผ่านการทดสอบท่องสูตรคูณ แม่ 2 ถึง แม่ 12 คล่องแคล่วแม่นยำ';
+            const school = document.getElementById('cert-school')?.value || 'โรงเรียนบึงงามพัฒนา';
+
+            ctx.fillStyle = '#FFFDF9';
+            ctx.fillRect(0, 0, 1000, 700);
+
+            ctx.strokeStyle = '#4338CA';
+            ctx.lineWidth = 18;
+            ctx.strokeRect(30, 30, 940, 640);
+
+            ctx.strokeStyle = '#F59E0B';
+            ctx.lineWidth = 6;
+            ctx.strokeRect(48, 48, 904, 604);
+
+            ctx.textAlign = 'center';
+            ctx.font = 'bold 54px Prompt, sans-serif';
+            ctx.fillText('🏆', 500, 130);
+
+            ctx.fillStyle = '#4338CA';
+            ctx.font = 'bold 38px Prompt, sans-serif';
+            ctx.fillText(school, 500, 195);
+
+            ctx.fillStyle = '#475569';
+            ctx.font = '500 22px Prompt, sans-serif';
+            ctx.fillText('ขอมอบเกียรติบัตรฉบับนี้เพื่อแสดงว่า', 500, 250);
+
+            ctx.fillStyle = '#D97706';
+            ctx.font = 'bold 44px Prompt, sans-serif';
+            ctx.fillText(name, 500, 325);
+
+            ctx.fillStyle = '#1E293B';
+            ctx.font = 'bold 26px Prompt, sans-serif';
+            ctx.fillText(achieve, 500, 395);
+
+            ctx.fillStyle = '#059669';
+            ctx.font = 'bold 22px Prompt, sans-serif';
+            ctx.fillText('โครงการพัฒนาทักษะคณิตศาสตร์ด้วยเทคโนโลยีดิจิทัล', 500, 450);
+
+            const dStr = new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
+            ctx.fillStyle = '#64748B';
+            ctx.font = '500 18px Prompt, sans-serif';
+            ctx.fillText(`ให้ไว้ ณ วันที่ ${dStr}`, 500, 540);
+        }
+
+        function downloadCertImage() {
+            const canvas = document.getElementById('cert-canvas');
+            const a = document.createElement('a');
+            a.download = 'Multiplication-Master-Certificate.png';
+            a.href = canvas.toDataURL('image/png');
+            a.click();
+            showToast('ดาวน์โหลดเกียรติบัตร PNG สำเร็จแล้ว');
+        }
+
+        // --- Copy Code.gs & Index.html ---
+        function copyCodeGs() {
+            const box = document.getElementById('code-gs-box');
+            box.select();
+            document.execCommand('copy');
+            showToast('คัดลอกโค้ด Code.gs เรียบร้อย! นำไปวางในไฟล์ Code.gs ของ Apps Script ได้เลย');
+        }
+
+        function copyIndexHtml() {
+            const fullHtml = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+            const temp = document.createElement('textarea');
+            temp.value = fullHtml;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+            showToast('คัดลอกโค้ด Index.html ทั้งหมดเรียบร้อย! นำไปวางในไฟล์ Index.html ของ Apps Script ได้เลย');
+        }
+
+        function showToast(msg) {
+            const el = document.getElementById('toast-alert');
+            document.getElementById('toast-msg').textContent = msg;
+            el.classList.remove('hidden');
+            el.classList.add('flex');
+            setTimeout(() => {
+                el.classList.add('hidden');
+                el.classList.remove('flex');
+            }, 3300);
+        }
+
+        window.onload = function () {
+            populateStudentDropdowns();
+            updatePracticePreviewCard();
+            renderMultiplicationBoard();
+            if (isRunningInGAS()) {
+                syncFromGoogleScript();
+            }
+        };
+    </script>
+</body>
+</html>
